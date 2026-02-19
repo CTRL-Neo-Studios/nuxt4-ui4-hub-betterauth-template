@@ -25,8 +25,8 @@ export function useServerEncryption() {
         }
 
         const [ivHex, encryptedHex] = parts
-        const iv = hexToBytes(ivHex)
-        const encrypted = hexToBytes(encryptedHex)
+        const iv = hexToBytes(ivHex || '')
+        const encrypted = hexToBytes(encryptedHex || '')
         const keyBytes = getKeyBytes(key)
 
         const decipher = cbc(keyBytes, iv)
@@ -36,7 +36,7 @@ export function useServerEncryption() {
     }
 
     async function encryptEndpoint(text: string): Promise<string> {
-        return await $fetch('/api/v1/auth/encrypt', {
+        return await $fetch<string>('/api/v1/auth/encrypt', {
             method: 'post',
             body: {
                 content: text
@@ -45,7 +45,7 @@ export function useServerEncryption() {
     }
 
     async function decryptEndpoint(text: string): Promise<string> {
-        return await $fetch('/api/v1/auth/decrypt', {
+        return await $fetch<string>('/api/v1/auth/decrypt', {
             method: 'post',
             body: {
                 content: text

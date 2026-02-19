@@ -1,71 +1,131 @@
-import {pgTable, timestamp, text, uuid, boolean, bigserial, json} from 'drizzle-orm/pg-core'
+import {pgTable, timestamp, text, uuid, boolean, bigserial, json, index} from 'drizzle-orm/pg-core'
 import {relations} from "drizzle-orm";
 
 // Tables
 
-export const users = pgTable('users', {
+// Better Auth Required Tables
+export const user = pgTable(
+    "user",
+    {
+        id: text("id").primaryKey(),
+        name: text("name").notNull(),
+        email: text("email").notNull().unique(),
+        emailVerified: boolean("email_verified").default(false).notNull(),
+        image: text("image"),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+        updatedAt: timestamp("updated_at")
+            .defaultNow()
+            .$onUpdate(() => /* @__PURE__ */ new Date())
+            .notNull(),
+        role: text("role", { enum: ["user", "auditor", "moderator", "admin"] })
+            .default("user")
+            .$defaultFn(() => 'user')
+            .notNull(),
+        banned: boolean('banned').default(false),
+        banReason: text('ban_reason'),
+        banExpires: timestamp('ban_expires'),
+    }
+);
+
+export const session = pgTable(
+    "session",
+    {
+        id: text("id").primaryKey(),
+        expiresAt: timestamp("expires_at").notNull(),
+        token: text("token").notNull().unique(),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+        updatedAt: timestamp("updated_at")
+            .$onUpdate(() => /* @__PURE__ */ new Date())
+            .notNull(),
+        ipAddress: text("ip_address"),
+        userAgent: text("user_agent"),
+        userId: text("user_id")
+            .notNull()
+            .references(() => user.id, { onDelete: "cascade" }),
+        impersonatedBy: text('impersonated_by'),
+    },
+    (table) => [index("session_userId_idx").on(table.userId)],
+);
+
+export const account = pgTable(
+    "account",
+    {
+        id: text("id").primaryKey(),
+        accountId: text("account_id").notNull(),
+        providerId: text("provider_id").notNull(),
+        userId: text("user_id")
+            .notNull()
+            .references(() => user.id, { onDelete: "cascade" }),
+        accessToken: text("access_token"),
+        refreshToken: text("refresh_token"),
+        idToken: text("id_token"),
+        accessTokenExpiresAt: timestamp("access_token_expires_at"),
+        refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+        scope: text("scope"),
+        password: text("password"),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+        updatedAt: timestamp("updated_at")
+            .$onUpdate(() => /* @__PURE__ */ new Date())
+            .notNull(),
+    },
+    (table) => [index("account_userId_idx").on(table.userId)],
+);
+
+export const verification = pgTable(
+    "verification",
+    {
+        id: text("id").primaryKey(),
+        identifier: text("identifier").notNull(),
+        value: text("value").notNull(),
+        expiresAt: timestamp("expires_at").notNull(),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+        updatedAt: timestamp("updated_at")
+            .defaultNow()
+            .$onUpdate(() => /* @__PURE__ */ new Date())
+            .notNull(),
+    },
+    (table) => [index("verification_identifier_idx").on(table.identifier)],
+);
+
+// Custom Tables
+
+export const file = pgTable('file', { // This must be at the bottom of the defined tables to make sure the set references aren't null
     id: uuid().primaryKey().defaultRandom(),
-    email: text().unique().notNull(),
-    password: text().notNull(),
-    admin: boolean().default(false).$defaultFn(() => false),
-    moderator: boolean().default(false).$defaultFn(() => false),
-    apiKey: text(),
+    userId: text().references(() => user.id, {onDelete: 'set null'}),
+    blobPath: text().notNull(),
+    fileName: text(),
     createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdateFn(() => new Date()),
-})
-
-export const profiles = pgTable('profiles', {
-    id: uuid().primaryKey().defaultRandom(),
-    username: text().notNull(),
-    bio: text(),
-    userId: uuid().notNull().references(() => users.id, {onDelete: 'cascade'}),
-    metadata: json('metadata'),
-    createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp({ withTimezone: true }).defaultNow().notNull().$onUpdateFn(() => new Date()),
-})
-
-export const sessions = pgTable('sessions', {
-    id: uuid().primaryKey().defaultRandom(),
-    refreshToken: uuid().defaultRandom(),
-    userId: uuid().notNull().references(() => users.id, {onDelete: 'cascade'}),
-    createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
-    expiresAt: timestamp({ withTimezone: true }).notNull()
-})
-
-export const posts = pgTable('post', {
-    id: uuid().primaryKey().defaultRandom(),
-    title: text().notNull(),
-    slug: text().notNull(),
-    content: text(),
-    authorId: uuid().references(() => users.id, {onDelete: 'set null'}),
-    createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
 })
 
 // Relations
 
-export const usersRelations = relations(users, ({ many, one }) => ({
-    profile: one(profiles),
-    sessions: many(sessions),
+// Better Auth Required Relations
+export const userRelations = relations(user, ({ many }) => ({
+    sessions: many(session),
+    accounts: many(account),
+    files: many(file)
 }));
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-    user: one(users, {
-        fields: [sessions.userId],
-        references: [users.id],
-    })
-}))
-
-export const profilesRelations = relations(profiles, ({ one, many }) => ({
-    user: one(users, {
-        fields: [profiles.userId],
-        references: [users.id],
-    })
-}))
-
-export const postsRelations = relations(posts, ({ one }) => ({
-    author: one(users, {
-        fields: [posts.authorId],
-        references: [users.id],
+export const sessionRelations = relations(session, ({ one }) => ({
+    user: one(user, {
+        fields: [session.userId],
+        references: [user.id],
     }),
 }));
+
+export const accountRelations = relations(account, ({ one }) => ({
+    user: one(user, {
+        fields: [account.userId],
+        references: [user.id],
+    }),
+}));
+
+// Custom Relations
+
+export const fileRelations = relations(file, ({one}) => ({
+    user: one(user, {
+        fields: [file.userId],
+        references: [user.id]
+    }),
+}))

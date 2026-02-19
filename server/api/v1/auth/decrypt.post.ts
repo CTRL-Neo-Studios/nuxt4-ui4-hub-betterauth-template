@@ -1,6 +1,6 @@
 import {z} from 'zod';
 import { useServerEncryption } from '~~/server/utils/utility/useServerEncryption'
-import { useServerAuth } from '~~/server/utils/auth/useServerAuth'
+import { useServerAuth } from '#server/utils/core/useServerAuth'
 
 const bodySchema = z.object({
     content: z.string()

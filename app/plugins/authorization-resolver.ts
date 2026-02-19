@@ -1,4 +1,4 @@
-import type { User } from '#auth-utils'
+import { useAuthSession } from '~/composables/core/useAuthSession'
 
 export default defineNuxtPlugin({
     name: 'authorization-resolver',
@@ -7,7 +7,7 @@ export default defineNuxtPlugin({
         return {
             provide: {
                 authorization: {
-                    resolveClientUser: () => useUserSession().user.value as User,
+                    resolveClientUser: () => unref(useAuthSession().user)
                 },
             },
         }

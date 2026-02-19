@@ -1,9 +1,6 @@
-export interface CursorPagination {
-    cursor: number,
-    pageSize: number
-}
-
-export interface OffsetPagination {
-    offset: number,
-    limit: number
+export interface GetUsersOptions {
+	name?: string,
+	role?: UserRole,
+	email?: string,
+	banned?: boolean
 }

@@ -1,41 +1,15 @@
 <script setup lang="ts">
-const { isLoggedIn } = useAuth()
 </script>
 
 <template>
     <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 flex flex-col justify-center items-center">
         <div class="text-center">
             <h1 class="text-4xl font-bold text-gray-900 mb-4">
-                Nuxt v4 + Nuxt UI v4 + Drizzle ORM + PostgreSQL
+                Nuxt v4 + Nuxt UI v4 + Nuxt Hub v0.10 + BetterAuth
             </h1>
             <p class="text-xl text-gray-600 mb-8">
                 Secure Authentication Template with CSRF Protection
             </p>
-            
-            <div class="space-x-4">
-                <template v-if="!isLoggedIn">
-                    <NuxtLink
-                        to="/signin"
-                        class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                    >
-                        Sign In
-                    </NuxtLink>
-                    <NuxtLink
-                        to="/signup"
-                        class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                    >
-                        Sign Up
-                    </NuxtLink>
-                </template>
-                <template v-else>
-                    <NuxtLink
-                        to="/dashboard"
-                        class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                    >
-                        Go to Dashboard
-                    </NuxtLink>
-                </template>
-            </div>
         </div>
         
         <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">

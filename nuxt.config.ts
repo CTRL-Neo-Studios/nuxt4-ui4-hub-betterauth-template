@@ -1,20 +1,45 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    compatibilityDate: '2025-05-15',
+    compatibilityDate: '2026-02-19',
     devtools: {enabled: true},
-    future: {
-        compatibilityVersion: 4,
-    },
     css: ['~/assets/css/main.css'],
+
+    hub: {
+        db: 'postgresql',
+        blob: true
+    },
 
     modules: [
       '@nuxt/ui',
       '@nuxt/image',
       '@nuxt/scripts',
-      'nuxt-auth-utils',
       'nuxt-umami',
       '@nuxt/icon',
       '@nuxt/fonts',
       'nuxt-authorization',
+      '@nuxthub/core',
+      '@vueuse/nuxt'
     ],
+
+    vite: {
+        optimizeDeps: {
+            include: [
+                'better-auth/vue',
+                'better-auth/client/plugins',
+                'zod'
+            ]
+        }
+    },
+
+    runtimeConfig: {
+        public: {
+            siteUrl: ''
+        },
+        resend: {
+            apiKey: ''
+        },
+        session: {
+            password: ''
+        }
+    }
 })

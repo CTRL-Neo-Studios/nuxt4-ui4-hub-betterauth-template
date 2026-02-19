@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
-@theme {
-    --font-sans: "Inter", "Segoe UI Variable Static Display", "Public Sans", "Noto Sans Simplified Chinese", sans-serif;
+@theme static {
+    --font-sans: "Geist", "Inter", "Segoe UI Variable Static Display", "Public Sans", "Noto Sans Simplified Chinese", sans-serif;
+	--font-mono: "Geist Mono", "JetBrains Mono", monospace;
+	--font-serif: "Spectral", "Libre Baskerville", "Baskerville", "Georgia", serif;
 }

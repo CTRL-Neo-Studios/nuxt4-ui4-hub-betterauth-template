@@ -11,7 +11,7 @@
  * @returns Normalized email string
  */
 export function sanitizeEmail(email: string): string {
-    if (!email || typeof email !== 'string') {
+    if (!email) {
         return ''
     }
     
@@ -29,7 +29,7 @@ export function sanitizeEmail(email: string): string {
  * @returns Sanitized username string
  */
 export function sanitizeUsername(username: string, maxLength: number = 50): string {
-    if (!username || typeof username !== 'string') {
+    if (!username) {
         return ''
     }
     
