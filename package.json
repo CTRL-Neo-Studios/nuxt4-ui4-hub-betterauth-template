@@ -13,6 +13,7 @@
 	},
 	"dependencies": {
 		"@electric-sql/pglite": "^0.3.15",
+		"@internationalized/date": "^3.11.0",
 		"@noble/ciphers": "^2.1.1",
 		"@nuxt/fonts": "0.14.0",
 		"@nuxt/icon": "2.2.1",
@@ -26,8 +27,9 @@
 		"@unhead/vue": "^2.1.10",
 		"@vercel/blob": "^2.3.0",
 		"@vueuse/nuxt": "14.2.1",
-		"better-auth": "^1.5.1",
+		"better-auth": "^1.5.2",
 		"drizzle-orm": "^0.45.1",
+		"motion-v": "^2.0.0",
 		"nuxt": "^4.3.1",
 		"nuxt-authorization": "0.3.5",
 		"nuxt-umami": "3.2.1",
