@@ -4,6 +4,8 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	css: ['~/assets/css/main.css'],
 
+	extends: [["github:CTRL-Neo-Studios/nuxt-ui-extras#dev", { install: true }]],
+
 	hub: {
 		db: 'postgresql',
 		blob: true,
