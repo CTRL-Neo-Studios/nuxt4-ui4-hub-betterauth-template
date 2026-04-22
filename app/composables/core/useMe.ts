@@ -32,7 +32,7 @@ export function useMe() {
 		// Session state pass-throughs
 		user: $session.user,
 		loggedIn: $session.loggedIn,
-		pending: $session.pending,
+		pending: $session.ready,
 		signOut: $session.clear,
 		refresh: $session.refresh,
 		// Profile API
