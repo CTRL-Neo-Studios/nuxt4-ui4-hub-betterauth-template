@@ -7,8 +7,6 @@ export default defineNuxtConfig({
 		typescriptPlugin: true,
 	},
 
-	extends: [['github:CTRL-Neo-Studios/nuxt-ui-extras#dev', { install: true }]],
-
 	hub: {
 		db: 'postgresql',
 		blob: true,
@@ -16,6 +14,7 @@ export default defineNuxtConfig({
 
 	modules: [
 		'@nuxt/ui',
+		'@type32/nuxt-ui-extras',
 		'@nuxt/image',
 		'@nuxt/scripts',
 		'nuxt-umami',
